@@ -16,34 +16,34 @@ export function TitleBar() {
 
   return (
     <div
-      className="h-9 bg-surface flex items-center justify-between select-none border-b border-border relative z-20"
+      className="h-10 bg-gradient-to-r from-surface via-surface to-card flex items-center justify-between select-none border-b border-border/50 relative z-20"
       data-tauri-drag-region
     >
-      <div className="flex items-center gap-2 px-3" data-tauri-drag-region>
-        <div className="w-5 h-5 bg-primary rounded flex items-center justify-center">
+      <div className="flex items-center gap-2.5 px-3" data-tauri-drag-region>
+        <div className="w-6 h-6 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/30">
           <span className="text-white text-xs font-bold">R</span>
         </div>
-        <span className="text-sm font-medium text-text">RunHub</span>
+        <span className="text-sm font-semibold text-text tracking-tight">RunHub</span>
       </div>
 
       <div className="flex">
         <button
           onClick={handleMinimize}
-          className="w-11 h-9 flex items-center justify-center hover:bg-surface-hover transition-colors"
+          className="w-12 h-10 flex items-center justify-center hover:bg-surface-hover transition-colors duration-150"
         >
           <Minus className="w-4 h-4 text-text-muted" />
         </button>
         <button
           onClick={handleMaximize}
-          className="w-11 h-9 flex items-center justify-center hover:bg-surface-hover transition-colors"
+          className="w-12 h-10 flex items-center justify-center hover:bg-surface-hover transition-colors duration-150"
         >
           <Square className="w-3 h-3 text-text-muted" />
         </button>
         <button
           onClick={handleClose}
-          className="w-11 h-9 flex items-center justify-center hover:bg-error transition-colors"
+          className="w-12 h-10 flex items-center justify-center hover:bg-error transition-colors duration-150 group"
         >
-          <X className="w-4 h-4 text-text-muted hover:text-white" />
+          <X className="w-4 h-4 text-text-muted group-hover:text-white transition-colors duration-150" />
         </button>
       </div>
     </div>

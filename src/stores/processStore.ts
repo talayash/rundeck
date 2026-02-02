@@ -6,12 +6,19 @@ import { writeTextFile } from '@tauri-apps/plugin-fs';
 import type { ProcessState, ProcessStatus, RunConfig } from '@/types';
 import { buildCommand } from '@/utils/commandBuilder';
 import { stripAnsi } from '@/utils/ansiUtils';
+import type { LogLevel } from '@/utils/logLevelDetector';
+
+export type SplitMode = 'single' | 'horizontal-2' | 'vertical-2' | 'grid-4';
 
 interface ProcessStore {
   processes: Record<string, ProcessState>;
   activeConfigId: string | null;
   terminalOutputs: Record<string, string[]>;
   clearVersion: Record<string, number>;
+  filterMode: Record<string, boolean>;
+  activeFilters: Record<string, Set<LogLevel>>;
+  splitMode: SplitMode;
+  splitTerminals: string[];
 
   setActiveConfig: (id: string | null) => void;
 
@@ -24,14 +31,26 @@ interface ProcessStore {
   clearOutput: (id: string) => void;
   exportLogs: (configId: string, configName: string) => Promise<void>;
 
+  toggleFilterMode: (configId: string) => void;
+  setLogLevelFilter: (configId: string, level: LogLevel, enabled: boolean) => void;
+
+  setSplitMode: (mode: SplitMode) => void;
+  toggleSplitTerminal: (configId: string) => void;
+
   initListeners: () => Promise<() => void>;
 }
+
+const DEFAULT_FILTERS: Set<LogLevel> = new Set(['error', 'warn', 'info', 'debug', 'unknown']);
 
 export const useProcessStore = create<ProcessStore>((set, get) => ({
   processes: {},
   activeConfigId: null,
   terminalOutputs: {},
   clearVersion: {},
+  filterMode: {},
+  activeFilters: {},
+  splitMode: 'single',
+  splitTerminals: [],
 
   setActiveConfig: (id) => set({ activeConfigId: id }),
 
@@ -190,6 +209,80 @@ export const useProcessStore = create<ProcessStore>((set, get) => ({
     if (filePath) {
       await writeTextFile(filePath, cleanContent);
     }
+  },
+
+  toggleFilterMode: (configId) => {
+    set((state) => {
+      const isCurrentlyActive = state.filterMode[configId] ?? false;
+      return {
+        filterMode: {
+          ...state.filterMode,
+          [configId]: !isCurrentlyActive,
+        },
+        activeFilters: {
+          ...state.activeFilters,
+          [configId]: state.activeFilters[configId] || new Set(DEFAULT_FILTERS),
+        },
+      };
+    });
+  },
+
+  setLogLevelFilter: (configId, level, enabled) => {
+    set((state) => {
+      const currentFilters = state.activeFilters[configId] || new Set(DEFAULT_FILTERS);
+      const newFilters = new Set(currentFilters);
+      if (enabled) {
+        newFilters.add(level);
+      } else {
+        newFilters.delete(level);
+      }
+      return {
+        activeFilters: {
+          ...state.activeFilters,
+          [configId]: newFilters,
+        },
+      };
+    });
+  },
+
+  setSplitMode: (mode) => {
+    set((state) => {
+      // When switching to single, clear split terminals
+      if (mode === 'single') {
+        return { splitMode: mode, splitTerminals: [] };
+      }
+
+      // When enabling split mode, initialize with active config if available
+      const { activeConfigId, splitTerminals } = state;
+      let newSplitTerminals = [...splitTerminals];
+
+      if (newSplitTerminals.length === 0 && activeConfigId) {
+        newSplitTerminals = [activeConfigId];
+      }
+
+      return { splitMode: mode, splitTerminals: newSplitTerminals };
+    });
+  },
+
+  toggleSplitTerminal: (configId) => {
+    set((state) => {
+      const { splitTerminals, splitMode } = state;
+      const maxTerminals = splitMode === 'grid-4' ? 4 : 2;
+
+      if (splitTerminals.includes(configId)) {
+        // Remove from split
+        return {
+          splitTerminals: splitTerminals.filter((id) => id !== configId),
+        };
+      } else if (splitTerminals.length < maxTerminals) {
+        // Add to split
+        return {
+          splitTerminals: [...splitTerminals, configId],
+        };
+      }
+
+      return state;
+    });
   },
 
   initListeners: async () => {

@@ -4,14 +4,35 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* RunHub custom colors */
-  --color-surface: #16213e;
+  /* RunHub custom colors - Enhanced */
+  --color-surface: #181828;
   --color-surface-hover: #1f2b4d;
   --color-text: #e4e4e7;
   --color-text-muted: #a1a1aa;
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
+
+  /* Gradient tokens */
+  --gradient-surface: linear-gradient(180deg, #1a1a2e 0%, #12121c 100%);
+  --gradient-card: linear-gradient(135deg, #181828 0%, #1a1a2e 100%);
+
+  /* Glow tokens */
+  --glow-primary: 0 0 20px rgba(59, 130, 246, 0.3);
+  --glow-success: 0 0 20px rgba(34, 197, 94, 0.3);
+  --glow-error: 0 0 20px rgba(239, 68, 68, 0.3);
+
+  /* Shadow tokens */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-glow-primary: 0 4px 14px 0 rgba(59, 130, 246, 0.25);
+  --shadow-glow-success: 0 4px 14px 0 rgba(34, 197, 94, 0.25);
+
+  /* Transition tokens */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
@@ -58,39 +79,39 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Dark theme is default for RunHub */
+/* Dark theme is default for RunHub - Enhanced colors */
 :root {
   --radius: 0.5rem;
-  --background: #1a1a2e;
+  --background: #12121c;
   --foreground: #e4e4e7;
-  --card: #16213e;
+  --card: #181828;
   --card-foreground: #e4e4e7;
-  --popover: #16213e;
+  --popover: #181828;
   --popover-foreground: #e4e4e7;
   --primary: #3b82f6;
   --primary-foreground: #ffffff;
   --secondary: #1f2b4d;
   --secondary-foreground: #e4e4e7;
-  --muted: #2d3a5a;
+  --muted: #363654;
   --muted-foreground: #a1a1aa;
   --accent: #8b5cf6;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
-  --border: #2d3a5a;
-  --input: #2d3a5a;
+  --border: #363654;
+  --input: #363654;
   --ring: #3b82f6;
   --chart-1: #3b82f6;
   --chart-2: #22c55e;
   --chart-3: #f59e0b;
   --chart-4: #8b5cf6;
   --chart-5: #ef4444;
-  --sidebar: #16213e;
+  --sidebar: #181828;
   --sidebar-foreground: #e4e4e7;
   --sidebar-primary: #3b82f6;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #1f2b4d;
   --sidebar-accent-foreground: #e4e4e7;
-  --sidebar-border: #2d3a5a;
+  --sidebar-border: #363654;
   --sidebar-ring: #3b82f6;
 }
 
@@ -116,23 +137,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Enhanced with hover states */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-surface);
+  background: transparent;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 4px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* Selection */
@@ -141,7 +168,7 @@ body {
   color: white;
 }
 
-/* Animations */
+/* Animations - Enhanced */
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -160,12 +187,83 @@ body {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    opacity: 0.8;
+  }
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background-size: 200% 100%;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-slide-up-fade {
+  animation: slide-up-fade 0.2s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.15s ease-out;
+}
+
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 @layer base {

@@ -34,26 +34,27 @@ export function TerminalView({ configId, isActive, onSearchAddonReady }: Termina
 
     const terminal = new Terminal({
       theme: {
-        background: '#1a1a2e',
-        foreground: '#e4e4e7',
+        background: '#12121c',
+        foreground: '#e8e8ed',
         cursor: '#3b82f6',
-        cursorAccent: '#1a1a2e',
+        cursorAccent: '#12121c',
         selectionBackground: '#3b82f680',
+        selectionForeground: '#ffffff',
         black: '#1a1a2e',
-        red: '#ef4444',
-        green: '#22c55e',
-        yellow: '#f59e0b',
-        blue: '#3b82f6',
-        magenta: '#8b5cf6',
-        cyan: '#06b6d4',
-        white: '#e4e4e7',
-        brightBlack: '#52525b',
-        brightRed: '#f87171',
-        brightGreen: '#4ade80',
-        brightYellow: '#fbbf24',
-        brightBlue: '#60a5fa',
-        brightMagenta: '#a78bfa',
-        brightCyan: '#22d3ee',
+        red: '#f87171',
+        green: '#4ade80',
+        yellow: '#fbbf24',
+        blue: '#60a5fa',
+        magenta: '#a78bfa',
+        cyan: '#22d3ee',
+        white: '#e8e8ed',
+        brightBlack: '#71717a',
+        brightRed: '#fca5a5',
+        brightGreen: '#86efac',
+        brightYellow: '#fde047',
+        brightBlue: '#93c5fd',
+        brightMagenta: '#c4b5fd',
+        brightCyan: '#67e8f9',
         brightWhite: '#fafafa',
       },
       fontFamily: '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace',
@@ -131,7 +132,7 @@ export function TerminalView({ configId, isActive, onSearchAddonReady }: Termina
     <div
       ref={terminalRef}
       className={`h-full w-full ${isActive ? '' : 'hidden'}`}
-      style={{ padding: '8px' }}
+      style={{ padding: '12px' }}
     />
   );
 }

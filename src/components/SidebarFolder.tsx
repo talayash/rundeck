@@ -35,11 +35,11 @@ export function SidebarFolder({
   return (
     <div className="space-y-1">
       <div
-        className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer hover:bg-surface-hover"
+        className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer hover:bg-surface-hover transition-colors duration-150"
         onClick={() => toggleFolder(folder.id)}
       >
         <ChevronRight
-          className={`w-4 h-4 text-text-muted transition-transform ${
+          className={`w-4 h-4 text-text-muted transition-transform duration-150 ${
             folder.expanded ? 'rotate-90' : ''
           }`}
         />
@@ -47,17 +47,19 @@ export function SidebarFolder({
           className="w-4 h-4"
           style={{ color: folder.color || '#a1a1aa' }}
         />
-        <span className="flex-1 text-sm text-text">{folder.name}</span>
+        <span className="flex-1 text-sm text-text font-medium">{folder.name}</span>
         {runningCount > 0 && (
-          <span className="text-xs bg-green-500/20 text-green-500 px-1.5 py-0.5 rounded">
+          <span className="text-xs bg-success/20 text-success px-1.5 py-0.5 rounded font-medium shadow-sm">
             {runningCount}
           </span>
         )}
-        <span className="text-xs text-text-muted">{configs.length}</span>
+        <span className="text-xs text-text-muted bg-background/50 px-1.5 py-0.5 rounded">
+          {configs.length}
+        </span>
       </div>
 
       {folder.expanded && (
-        <div className="pl-4 space-y-1">
+        <div className="pl-4 space-y-1 border-l border-border/30 ml-2">
           {configs.map((config) => (
             <SidebarItem
               key={config.id}

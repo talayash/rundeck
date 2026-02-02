@@ -45,7 +45,10 @@ export function CommandPalette({
           label: config.name,
           description: isRunning ? 'Running' : 'Stopped',
           icon: isRunning ? (
-            <div className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+            </span>
           ) : (
             <div className="w-2 h-2 rounded-full bg-zinc-500" />
           ),
@@ -59,9 +62,9 @@ export function CommandPalette({
           id: `toggle-${config.id}`,
           label: isRunning ? `Stop ${config.name}` : `Start ${config.name}`,
           icon: isRunning ? (
-            <Square className="w-4 h-4 text-red-500" />
+            <Square className="w-4 h-4 text-error" />
           ) : (
-            <Play className="w-4 h-4 text-green-500" />
+            <Play className="w-4 h-4 text-success" />
           ),
           action: () => {
             if (isRunning) {
@@ -147,15 +150,15 @@ export function CommandPalette({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-0 bg-surface border-border overflow-hidden">
-        <div className="flex items-center border-b border-border px-3">
+      <DialogContent className="max-w-lg p-0 bg-card border-border/50 overflow-hidden" showCloseButton={false}>
+        <div className="flex items-center border-b border-border/50 px-3 bg-surface/50">
           <Search className="w-4 h-4 text-text-muted" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search commands and configurations..."
-            className="border-0 focus-visible:ring-0 bg-transparent"
+            className="border-0 focus-visible:ring-0 bg-transparent h-12"
             autoFocus
           />
         </div>
@@ -171,30 +174,46 @@ export function CommandPalette({
                 <button
                   key={cmd.id}
                   className={`
-                    w-full flex items-center gap-3 px-3 py-2 rounded-md text-left
-                    transition-colors
-                    ${index === selectedIndex ? 'bg-surface-hover' : 'hover:bg-surface-hover/50'}
+                    w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left
+                    transition-all duration-150
+                    ${index === selectedIndex
+                      ? 'bg-primary/10 border border-primary/20'
+                      : 'hover:bg-surface-hover border border-transparent'}
                   `}
                   onClick={cmd.action}
                   onMouseEnter={() => setSelectedIndex(index)}
                 >
-                  {cmd.icon}
+                  <div className="flex items-center justify-center w-6">
+                    {cmd.icon}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-text truncate">{cmd.label}</p>
                     {cmd.description && (
                       <p className="text-xs text-text-muted truncate">{cmd.description}</p>
                     )}
                   </div>
+                  {index === selectedIndex && (
+                    <span className="text-xs text-primary">Select</span>
+                  )}
                 </button>
               ))
             )}
           </div>
         </ScrollArea>
 
-        <div className="border-t border-border px-3 py-2 flex items-center gap-4 text-xs text-text-muted">
-          <span><kbd className="px-1 bg-background rounded">↑↓</kbd> Navigate</span>
-          <span><kbd className="px-1 bg-background rounded">↵</kbd> Select</span>
-          <span><kbd className="px-1 bg-background rounded">Esc</kbd> Close</span>
+        <div className="border-t border-border/50 px-3 py-2 flex items-center gap-4 text-xs text-text-muted bg-surface/30">
+          <span className="flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 bg-background/80 rounded border border-border/50 font-mono">↑↓</kbd>
+            <span>Navigate</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 bg-background/80 rounded border border-border/50 font-mono">↵</kbd>
+            <span>Select</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 bg-background/80 rounded border border-border/50 font-mono">Esc</kbd>
+            <span>Close</span>
+          </span>
         </div>
       </DialogContent>
     </Dialog>

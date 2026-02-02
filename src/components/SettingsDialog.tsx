@@ -15,12 +15,14 @@ interface SettingsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const ACCENT_COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+
 export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const settings = useSettingsStore();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl bg-surface border-border">
+      <DialogContent className="max-w-2xl bg-card border-border/50">
         <DialogHeader>
           <DialogTitle className="text-text">Settings</DialogTitle>
         </DialogHeader>
@@ -36,7 +38,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
           <TabsContent value="general" className="space-y-4 mt-4">
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-3 bg-background/30 rounded-lg border border-border/30">
                 <div>
                   <p className="text-sm font-medium text-text">Start on boot</p>
                   <p className="text-xs text-text-muted">Launch RunHub when Windows starts</p>
@@ -45,13 +47,11 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   type="checkbox"
                   checked={settings.startOnBoot}
                   onChange={(e) => settings.updateSettings({ startOnBoot: e.target.checked })}
-                  className="rounded"
+                  className="rounded w-4 h-4 accent-primary"
                 />
               </div>
 
-              <Separator />
-
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-3 bg-background/30 rounded-lg border border-border/30">
                 <div>
                   <p className="text-sm font-medium text-text">Minimize to tray</p>
                   <p className="text-xs text-text-muted">Keep RunHub running in system tray when closed</p>
@@ -60,11 +60,11 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   type="checkbox"
                   checked={settings.minimizeToTray}
                   onChange={(e) => settings.updateSettings({ minimizeToTray: e.target.checked })}
-                  className="rounded"
+                  className="rounded w-4 h-4 accent-primary"
                 />
               </div>
 
-              <Separator />
+              <Separator className="opacity-50" />
 
               <div className="space-y-2">
                 <p className="text-sm font-medium text-text">Default shell</p>
@@ -72,7 +72,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   value={settings.defaultShell}
                   onChange={(e) => settings.updateSettings({ defaultShell: e.target.value })}
                   placeholder="powershell.exe"
-                  className="bg-background border-border"
+                  className="bg-background/50 border-border/50 font-mono"
                 />
               </div>
             </div>
@@ -85,7 +85,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                 <Input
                   value={settings.fontFamily}
                   onChange={(e) => settings.updateSettings({ fontFamily: e.target.value })}
-                  className="bg-background border-border font-mono text-sm"
+                  className="bg-background/50 border-border/50 font-mono text-sm"
                 />
               </div>
 
@@ -98,7 +98,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     onChange={(e) => settings.updateSettings({ fontSize: parseInt(e.target.value) || 13 })}
                     min={8}
                     max={24}
-                    className="bg-background border-border"
+                    className="bg-background/50 border-border/50"
                   />
                 </div>
 
@@ -110,7 +110,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     onChange={(e) => settings.updateSettings({ scrollback: parseInt(e.target.value) || 10000 })}
                     min={1000}
                     max={100000}
-                    className="bg-background border-border"
+                    className="bg-background/50 border-border/50"
                   />
                 </div>
               </div>
@@ -124,6 +124,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                       variant={settings.cursorStyle === style ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => settings.updateSettings({ cursorStyle: style })}
+                      className={settings.cursorStyle === style ? 'shadow-lg shadow-primary/20' : ''}
                     >
                       {style.charAt(0).toUpperCase() + style.slice(1)}
                     </Button>
@@ -131,13 +132,13 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-3 bg-background/30 rounded-lg border border-border/30">
                 <p className="text-sm font-medium text-text">Cursor blink</p>
                 <input
                   type="checkbox"
                   checked={settings.cursorBlink}
                   onChange={(e) => settings.updateSettings({ cursorBlink: e.target.checked })}
-                  className="rounded"
+                  className="rounded w-4 h-4 accent-primary"
                 />
               </div>
             </div>
@@ -148,20 +149,18 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               <div className="space-y-2">
                 <p className="text-sm font-medium text-text">Accent color</p>
                 <div className="flex gap-2">
-                  {['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'].map(
-                    (color) => (
-                      <button
-                        key={color}
-                        className={`w-8 h-8 rounded ${
-                          settings.accentColor === color
-                            ? 'ring-2 ring-white ring-offset-2 ring-offset-surface'
-                            : ''
-                        }`}
-                        style={{ backgroundColor: color }}
-                        onClick={() => settings.updateSettings({ accentColor: color })}
-                      />
-                    )
-                  )}
+                  {ACCENT_COLORS.map((color) => (
+                    <button
+                      key={color}
+                      className={`w-10 h-10 rounded-lg transition-all duration-150 ${
+                        settings.accentColor === color
+                          ? 'ring-2 ring-white ring-offset-2 ring-offset-card scale-110'
+                          : 'hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => settings.updateSettings({ accentColor: color })}
+                    />
+                  ))}
                 </div>
               </div>
 
@@ -173,7 +172,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   onChange={(e) => settings.updateSettings({ sidebarWidth: parseInt(e.target.value) || 280 })}
                   min={200}
                   max={400}
-                  className="bg-background border-border"
+                  className="bg-background/50 border-border/50"
                 />
               </div>
             </div>
@@ -192,10 +191,10 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               ].map(({ key, action }) => (
                 <div
                   key={key}
-                  className="flex items-center justify-between py-2 px-3 bg-background rounded"
+                  className="flex items-center justify-between py-2.5 px-3 bg-background/30 rounded-lg border border-border/30"
                 >
                   <span className="text-sm text-text">{action}</span>
-                  <kbd className="px-2 py-1 bg-surface border border-border rounded text-xs font-mono text-text-muted">
+                  <kbd className="px-2.5 py-1 bg-card border border-border/50 rounded-md text-xs font-mono text-text-muted">
                     {key}
                   </kbd>
                 </div>
@@ -205,12 +204,15 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
           <TabsContent value="about" className="mt-4">
             <div className="text-center py-8">
-              <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-white text-2xl font-bold">R</span>
+              <div className="relative w-20 h-20 mx-auto mb-4">
+                <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg animate-pulse"></div>
+                <div className="relative w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+                  <span className="text-white text-3xl font-bold">R</span>
+                </div>
               </div>
               <h2 className="text-xl font-semibold text-text mb-1">RunHub</h2>
               <p className="text-text-muted mb-4">Version 0.1.0</p>
-              <p className="text-sm text-text-muted max-w-md mx-auto">
+              <p className="text-sm text-text-muted max-w-md mx-auto leading-relaxed">
                 A Windows desktop application for managing terminal-based run
                 configurations. Built with Tauri, React, and TypeScript.
               </p>
