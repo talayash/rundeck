@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: 'src-tauri -> target'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'RunHub ${{ github.ref_name }}'
+          releaseBody: |
+            ## RunHub ${{ github.ref_name }}
+
+            ### Downloads
+            - **RunHub_x64-setup.exe** - NSIS Installer (recommended)
+            - **RunHub_x64_en-US.msi** - MSI Installer
+
+            ### System Requirements
+            - Windows 10/11 (64-bit)
+            - WebView2 Runtime (included in Windows 11, auto-installed on Windows 10)
+
+            ### Changelog
+            See [commits](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}) for changes.
+          releaseDraft: false
+          prerelease: false
