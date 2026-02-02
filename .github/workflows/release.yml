@@ -23,7 +23,7 @@ jobs:
           cache: 'npm'
 
       - name: Setup Rust
-        uses: dtolnay/rust-action@stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Rust cache
         uses: Swatinem/rust-cache@v2
@@ -39,13 +39,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: 'RunHub ${{ github.ref_name }}'
+          releaseName: 'RunDeck ${{ github.ref_name }}'
           releaseBody: |
-            ## RunHub ${{ github.ref_name }}
+            ## RunDeck ${{ github.ref_name }}
 
             ### Downloads
-            - **RunHub_x64-setup.exe** - NSIS Installer (recommended)
-            - **RunHub_x64_en-US.msi** - MSI Installer
+            - **RunDeck_x64-setup.exe** - NSIS Installer (recommended)
+            - **RunDeck_x64_en-US.msi** - MSI Installer
 
             ### System Requirements
             - Windows 10/11 (64-bit)
